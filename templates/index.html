@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مُولّد أكواد QR الذكي</title>
-    <!-- Google Fonts لخط أنيق -->
+    <title>مُولّد أكواد QR الذكي - مسعد طبيش</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -13,18 +12,16 @@
             padding: 0;
             font-family: 'Cairo', sans-serif;
         }
-
         body {
-            /* خلفية متدرجة عصرية مريحة للعين */
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
             color: #f8fafc;
         }
-
         .container {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(10px);
@@ -36,31 +33,26 @@
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
         h1 {
             font-size: 24px;
             margin-bottom: 10px;
             font-weight: 700;
         }
-
         .subtitle {
             color: #94a3b8;
             font-size: 14px;
             margin-bottom: 25px;
         }
-
         .form-group {
             text-align: right;
             margin-bottom: 20px;
         }
-
         label {
             display: block;
             margin-bottom: 8px;
             color: #cbd5e1;
             font-weight: 600;
         }
-
         input[type="text"] {
             width: 100%;
             padding: 14px;
@@ -70,14 +62,12 @@
             color: #fff;
             font-size: 16px;
             outline: none;
-            transition: all 0.3s ease;
+            text-align: right;
         }
-
         input[type="text"]:focus {
             border-color: #6366f1;
             box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
         }
-
         .btn {
             width: 100%;
             padding: 14px;
@@ -88,57 +78,49 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         .btn-primary {
             background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
             color: white;
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-            margin-bottom: 15px;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.5);
-        }
-
         .btn-success {
             background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             color: white;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
             margin-top: 15px;
         }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
-        }
-
         .result-section {
             margin-top: 25px;
             padding-top: 25px;
             border-top: 1px dashed #334155;
         }
-
         .qr-card {
             background: white;
             padding: 15px;
             border-radius: 16px;
             display: inline-block;
             margin-bottom: 10px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
-
         .qr-card img {
             display: block;
-            max-width: 100%;
+            max-width: 200px;
             height: auto;
         }
-
         .success-msg {
             color: #10b981;
             font-size: 14px;
             margin-top: 8px;
             font-weight: 600;
+        }
+        /* قسم الحقوق الخاص بك */
+        footer {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #64748b;
+        }
+        footer span {
+            color: #6366f1;
+            font-weight: 700;
         }
     </style>
 </head>
@@ -151,37 +133,43 @@
         <form method="POST">
             <div class="form-group">
                 <label for="data">الرابط أو النص:</label>
-                <input type="text" id="data" name="data" placeholder="انسخ الرابط هنا..." required value="{{ data if data else '' }}">
+                <input type="text" id="data" name="data" placeholder="انسخ الرابط هنا..." required>
             </div>
             <button type="submit" class="btn btn-primary">توليد الكود الآن ✨</button>
         </form>
 
-        {% if qr_generated %}
-        <div class="result-section">
+        <div class="result-section" id="resultArea" style="display: none;">
             <h3 style="margin-bottom: 15px; color: #cbd5e1;">كود الـ QR الخاص بك جاهز:</h3>
             <div class="qr-card">
-                <!-- تأكد أن السورس يقرأ الصورة المفتوحة من السيرفر بشكل صحيح -->
-                <img id="qrImage" src="{{ url_for('static', filename='qr.png') if not url_for_defined else '/qr.png' }}" alt="QR Code">
+                <img id="qrImage" src="/qr.png" alt="QR Code">
             </div>
-            
-            <!-- زر التحميل الذكي -->
             <button onclick="downloadQR()" class="btn btn-success">تحميل كود الـ QR مباشرة 📥</button>
             <p class="success-msg">تم التوليد بنجاح!</p>
         </div>
-        {% endif %}
     </div>
 
+    <footer>
+        تطوير وبرمجة بواسطة <span>مسعد طبيش</span> © 2026
+    </footer>
+
     <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const qrImg = document.getElementById('qrImage');
+            qrImg.src = '/qr.png?t=' + new Date().getTime();
+            
+            qrImg.onload = function() {
+                document.getElementById('resultArea').style.display = 'block';
+            }
+        });
+
         function downloadQR() {
             const qrImg = document.getElementById('qrImage');
-            if (qrImg) {
-                const link = document.createElement('a');
-                link.href = qrImg.src;
-                link.download = 'my-qrcode.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
+            const link = document.createElement('a');
+            link.href = qrImg.src;
+            link.download = 'qrcode.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
