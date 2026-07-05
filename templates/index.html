@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مُولّد أكواد QR الذكي - مسعد طبيش</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -93,6 +94,7 @@
             margin-top: 25px;
             padding-top: 25px;
             border-top: 1px dashed #334155;
+            display: none; /* مخفي في البداية ويظهر فوراً عند التوليد */
         }
         .qr-card {
             background: white;
@@ -101,8 +103,9 @@
             display: inline-block;
             margin-bottom: 10px;
         }
-        .qr-card img {
+        .qr-card canvas, .qr-card img {
             display: block;
+            margin: 0 auto;
             max-width: 200px;
             height: auto;
         }
@@ -129,25 +132,22 @@
         <h1>مُولّد أكواد QR الذكي 📱</h1>
         <p class="subtitle">اكتب أي رابط أو نص ليتم تحويله فوراً إلى كود قابل للمسح.</p>
 
-        <form method="POST">
+        <form id="qrForm" onsubmit="generateQR(event)">
             <div class="form-group">
                 <label for="data">الرابط أو النص:</label>
-                <input type="text" id="data" name="data" placeholder="انسخ الرابط هنا..." required value="{{ data if data else '' }}">
+                <input type="text" id="data" placeholder="انسخ الرابط هنا..." required>
             </div>
             <button type="submit" class="btn btn-primary">توليد الكود الآن ✨</button>
         </form>
 
-        <!-- هنا نعتمد على الفلاسك مباشرة لكي يظهر بعد إرسال الفورم بنجاح -->
-        {% if data %}
         <div class="result-section" id="resultArea">
             <h3 style="margin-bottom: 15px; color: #cbd5e1;">كود الـ QR الخاص بك جاهز:</h3>
             <div class="qr-card">
-                <img id="qrImage" src="/qr.png" alt="QR Code">
+                <div id="qrcode"></div>
             </div>
             <button onclick="downloadQR()" class="btn btn-success">تحميل كود الـ QR مباشرة 📥</button>
             <p class="success-msg">تم التوليد بنجاح!</p>
         </div>
-        {% endif %}
     </div>
 
     <footer>
@@ -155,26 +155,51 @@
     </footer>
 
     <script>
-        // كود التحميل المباشر
+        let qrcodeInstance = null;
+
+        function generateQR(event) {
+            event.preventDefault();
+            const dataInput = document.getElementById('data').value;
+            const qrContainer = document.getElementById('qrcode');
+            
+            // تنظيف الكود القديم إن وجد
+            qrContainer.innerHTML = '';
+            
+            // توليد الـ QR كود الجديد فوراً
+            qrcodeInstance = new QRCode(qrContainer, {
+                text: dataInput,
+                width: 200,
+                height: 200,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            // إظهار منطقة النتيجة
+            document.getElementById('resultArea').style.display = 'block';
+        }
+
         function downloadQR() {
-            const qrImg = document.getElementById('qrImage');
-            if (qrImg) {
+            // جلب الصورة المولدة من داخل مكتبة QRCode
+            const qrImg = document.querySelector('#qrcode img');
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            
+            let downloadUrl = '';
+            if (qrImg && qrImg.src) {
+                downloadUrl = qrImg.src;
+            } else if (qrCanvas) {
+                downloadUrl = qrCanvas.toDataURL("image/png");
+            }
+
+            if (downloadUrl) {
                 const link = document.createElement('a');
-                link.href = qrImg.src;
-                link.download = 'qrcode.png';
+                link.href = downloadUrl;
+                link.download = 'qrcode_mossaed.png';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
             }
         }
-        
-        // كود لتحديث الصورة في المتصفح وعدم الكاش
-        window.addEventListener('DOMContentLoaded', () => {
-            const qrImg = document.getElementById('qrImage');
-            if (qrImg) {
-                qrImg.src = '/qr.png?t=' + new Date().getTime();
-            }
-        });
     </script>
 </body>
 </html>
