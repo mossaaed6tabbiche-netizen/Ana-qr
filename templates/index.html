@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مُولّد أكواد QR الذكي - مسعد طبيش</title>
+    <title>مُولّد أكواد QR الاحترافي - مسعد طبيش</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
@@ -30,7 +30,7 @@
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -69,6 +69,24 @@
             border-color: #6366f1;
             box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
         }
+        .color-picker-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: space-between;
+        }
+        .color-item {
+            flex: 1;
+            text-align: right;
+        }
+        .color-item input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: none;
+        }
         .btn {
             width: 100%;
             padding: 14px;
@@ -78,23 +96,37 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
         }
         .btn-primary {
             background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
             color: white;
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
         .btn-success {
             background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             color: white;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-            margin-top: 15px;
+        }
+        .btn-share {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
         }
         .result-section {
             margin-top: 25px;
             padding-top: 25px;
             border-top: 1px dashed #334155;
-            display: none; /* مخفي في البداية ويظهر فوراً عند التوليد */
+            display: none;
         }
         .qr-card {
             background: white;
@@ -109,11 +141,49 @@
             max-width: 200px;
             height: auto;
         }
-        .success-msg {
-            color: #10b981;
+        .history-section {
+            margin-top: 25px;
+            text-align: right;
+            border-top: 1px solid #334155;
+            padding-top: 20px;
+        }
+        .history-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+        .history-list {
+            list-style: none;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .history-item {
+            background: #0f172a;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
             font-size: 14px;
-            margin-top: 8px;
-            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #1e293b;
+        }
+        .history-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px;
+            direction: ltr;
+        }
+        .btn-recreate {
+            background: #334155;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
         }
         footer {
             margin-top: 20px;
@@ -129,15 +199,28 @@
 <body>
 
     <div class="container">
-        <h1>مُولّد أكواد QR الذكي 📱</h1>
-        <p class="subtitle">اكتب أي رابط أو نص ليتم تحويله فوراً إلى كود قابل للمسح.</p>
+        <h1>مُولّد أكواد QR الاحترافي 🚀</h1>
+        <p class="subtitle">اصنع، خصّص ألوانك، وتصفح سجل الأكواد السابقة بكل سهولة.</p>
 
         <form id="qrForm" onsubmit="generateQR(event)">
             <div class="form-group">
                 <label for="data">الرابط أو النص:</label>
                 <input type="text" id="data" placeholder="انسخ الرابط هنا..." required>
             </div>
-            <button type="submit" class="btn btn-primary">توليد الكود الآن ✨</button>
+
+            <!-- ميزة تخصيص الألوان -->
+            <div class="color-picker-group">
+                <div class="color-item">
+                    <label>لون الكود:</label>
+                    <input type="color" id="fgColor" value="#000000">
+                </div>
+                <div class="color-item">
+                    <label>خلفية الكود:</label>
+                    <input type="color" id="bgColor" value="#ffffff">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">توليد وتخصيص الكود ✨</button>
         </form>
 
         <div class="result-section" id="resultArea">
@@ -145,8 +228,18 @@
             <div class="qr-card">
                 <div id="qrcode"></div>
             </div>
-            <button onclick="downloadQR()" class="btn btn-success">تحميل كود الـ QR مباشرة 📥</button>
-            <p class="success-msg">تم التوليد بنجاح!</p>
+            
+            <!-- أزرار التحميل والمشاركة السريعة -->
+            <div class="actions-grid">
+                <button onclick="downloadQR()" class="btn btn-success">تحميل 📥</button>
+                <button onclick="shareQR()" class="btn btn-share">مشاركة 🔗</button>
+            </div>
+        </div>
+
+        <!-- ميزة السجل الحافظ للتاريخ -->
+        <div class="history-section" id="historySection" style="display: none;">
+            <div class="history-title">الأكواد الأخيرة الصادرة:</div>
+            <ul class="history-list" id="historyList"></ul>
         </div>
     </div>
 
@@ -157,39 +250,41 @@
     <script>
         let qrcodeInstance = null;
 
-        function generateQR(event) {
-            event.preventDefault();
-            const dataInput = document.getElementById('data').value;
+        // تشغيل السجل عند تحميل الصفحة
+        document.addEventListener("DOMContentLoaded", displayHistory);
+
+        function generateQR(event, textValue = null) {
+            if(event) event.preventDefault();
+            
+            const dataInput = textValue || document.getElementById('data').value;
+            if (!textValue) document.getElementById('data').value = dataInput;
+
+            const fgColor = document.getElementById('fgColor').value;
+            const bgColor = document.getElementById('bgColor').value;
             const qrContainer = document.getElementById('qrcode');
             
-            // تنظيف الكود القديم إن وجد
             qrContainer.innerHTML = '';
             
-            // توليد الـ QR كود الجديد فوراً
             qrcodeInstance = new QRCode(qrContainer, {
                 text: dataInput,
                 width: 200,
                 height: 200,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
+                colorDark : fgColor,
+                colorLight : bgColor,
                 correctLevel : QRCode.CorrectLevel.H
             });
 
-            // إظهار منطقة النتيجة
             document.getElementById('resultArea').style.display = 'block';
+
+            if (!textValue) {
+                saveToHistory(dataInput);
+            }
         }
 
         function downloadQR() {
-            // جلب الصورة المولدة من داخل مكتبة QRCode
             const qrImg = document.querySelector('#qrcode img');
             const qrCanvas = document.querySelector('#qrcode canvas');
-            
-            let downloadUrl = '';
-            if (qrImg && qrImg.src) {
-                downloadUrl = qrImg.src;
-            } else if (qrCanvas) {
-                downloadUrl = qrCanvas.toDataURL("image/png");
-            }
+            let downloadUrl = qrImg?.src || qrCanvas?.toDataURL("image/png");
 
             if (downloadUrl) {
                 const link = document.createElement('a');
@@ -199,6 +294,65 @@
                 link.click();
                 document.body.removeChild(link);
             }
+        }
+
+        // ميزة المشاركة الذكية عبر الـ Web API
+        async function shareQR() {
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            if (!qrCanvas) return;
+
+            qrCanvas.toBlob(async (blob) => {
+                const file = new File([blob], 'qrcode.png', { type: blob.type });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: 'كود QR الخاص بي',
+                            text: 'تم التوليد عبر تطبيق مسعد طبيش'
+                        });
+                    } catch (err) {
+                        alert("المشاركة مدعومة فقط داخل التطبيق الفعلي!");
+                    }
+                } else {
+                    alert("نظام التشغيل لا يدعم مشاركة الملفات مباشرة.");
+                }
+            });
+        }
+
+        // حفظ الأكواد في الذاكرة الـ LocalStorage
+        function saveToHistory(text) {
+            let history = JSON.parse(localStorage.getItem('qr_history')) || [];
+            if (!history.includes(text)) {
+                history.unshift(text); // إضافة في البداية
+                if (history.length > 5) history.pop(); // الاحتفاظ بآخر 5 فقط
+                localStorage.setItem('qr_history', JSON.stringify(history));
+                displayHistory();
+            }
+        }
+
+        // عرض السجل للمستخدم
+        function displayHistory() {
+            let history = JSON.parse(localStorage.getItem('qr_history')) || [];
+            const list = document.getElementById('historyList');
+            const section = document.getElementById('historySection');
+
+            if (history.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            list.innerHTML = '';
+
+            history.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                li.innerHTML = `
+                    <button class="btn-recreate" onclick="generateQR(null, '${item}')">توليد</button>
+                    <div class="history-text">${item}</div>
+                `;
+                list.appendChild(li);
+            });
         }
     </script>
 </body>
