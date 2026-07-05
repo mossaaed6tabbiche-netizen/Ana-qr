@@ -3,44 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مُولّد أكواد QR ذكي</title>
+    <title>مُولّد أكواد QR الذكي</title>
+    <!-- Google Fonts لخط أنيق -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f6fa; color: #2f3640; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); text-align: center; max-width: 420px; width: 90%; }
-        h1 { color: #2f3542; font-size: 22px; margin-bottom: 8px; }
-        p { color: #747d8c; font-size: 14px; margin-bottom: 24px; }
-        form { margin-bottom: 20px; text-align: right; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #57606f; }
-        input[type="text"] { width: 100%; padding: 12px; border: 2px solid #f1f2f6; border-radius: 8px; font-size: 15px; outline: none; transition: 0.3s; text-align: left; }
-        input[type="text"]:focus { border-color: #70a1ff; }
-        .btn { display: inline-block; width: 100%; padding: 12px; background-color: #70a1ff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn:hover { background-color: #1e90ff; }
-        .qr-result { margin-top: 25px; padding-top: 20px; border-top: 2px dashed #f1f2f6; }
-        .qr-result img { max-width: 200px; border: 1px solid #dcdde1; border-radius: 8px; padding: 5px; background: white; }
-        .success-msg { color: #2ed573; font-size: 14px; margin-top: 10px; font-weight: bold; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            /* خلفية متدرجة عصرية مريحة للعين */
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #f8fafc;
+        }
+
+        .container {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 2px solid #334155;
+            background: #0f172a;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            margin-top: 15px;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+        }
+
+        .result-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px dashed #334155;
+        }
+
+        .qr-card {
+            background: white;
+            padding: 15px;
+            border-radius: 16px;
+            display: inline-block;
+            margin-bottom: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .qr-card img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .success-msg {
+            color: #10b981;
+            font-size: 14px;
+            margin-top: 8px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
         <h1>مُولّد أكواد QR الذكي 📱</h1>
-        <p>اكتب أي رابط أو نص ليتم تحويله فوراً إلى كود QR قابل للمسح.</p>
-        
-        <form method="POST" action="/">
-            <label for="text_data">الرابط أو النص:</label>
-            <input type="text" id="text_data" name="text_data" placeholder="https://example.com" required value="{{ text_input }}">
-            <button type="submit" class="btn">توليد الكود الآن ✨</button>
+        <p class="subtitle">اكتب أي رابط أو نص ليتم تحويله فوراً إلى كود قابل للمسح.</p>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="data">الرابط أو النص:</label>
+                <input type="text" id="data" name="data" placeholder="انسخ الرابط هنا..." required value="{{ data if data else '' }}">
+            </div>
+            <button type="submit" class="btn btn-primary">توليد الكود الآن ✨</button>
         </form>
 
         {% if qr_generated %}
-        <div class="qr-result">
-            <h3>كود الـ QR الخاص بك جاهز:</h3>
-            <!-- تم تصليح السطر هنا ليعرض الصورة مباشرة -->
-            <img src="/static/qr.png" alt="QR Code">
-            <p class="success-msg">تم التوليد بنجاح! يمكنك تصوير الشاشة لتجربته.</p>
+        <div class="result-section">
+            <h3 style="margin-bottom: 15px; color: #cbd5e1;">كود الـ QR الخاص بك جاهز:</h3>
+            <div class="qr-card">
+                <!-- تأكد أن السورس يقرأ الصورة المفتوحة من السيرفر بشكل صحيح -->
+                <img id="qrImage" src="{{ url_for('static', filename='qr.png') if not url_for_defined else '/qr.png' }}" alt="QR Code">
+            </div>
+            
+            <!-- زر التحميل الذكي -->
+            <button onclick="downloadQR()" class="btn btn-success">تحميل كود الـ QR مباشرة 📥</button>
+            <p class="success-msg">تم التوليد بنجاح!</p>
         </div>
         {% endif %}
     </div>
+
+    <script>
+        function downloadQR() {
+            const qrImg = document.getElementById('qrImage');
+            if (qrImg) {
+                const link = document.createElement('a');
+                link.href = qrImg.src;
+                link.download = 'my-qrcode.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    </script>
 </body>
 </html>
-
