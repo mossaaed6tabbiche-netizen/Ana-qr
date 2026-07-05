@@ -3,399 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق Ana-qr الاحترافي - مسعد طبيش</title>
+    <title>Mossaad QR الاحترافي</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-        }
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            color: #f8fafc;
-            overflow-x: hidden;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; color: #f8fafc; overflow-x: hidden; }
 
-        /* 1. واجهة الترحيب (Splash Screen) */
+        /* واجهة ترحيب سينمائية */
         #splashScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0f172a;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #0f172a, #1e1b4b, #312e81, #0f172a);
+            background-size: 300% 300%;
+            animation: gradientBG 5s ease infinite;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s;
         }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
         .splash-logo {
-            width: 100px;
-            height: 100px;
-            border: 4px solid #6366f1;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 1.5s linear infinite;
-            margin-bottom: 20px;
+            width: 120px; height: 120px; background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #818cf8; border-radius: 20px; display: flex;
+            justify-content: center; align-items: center; font-size: 40px;
+            animation: pulse 2s infinite; margin-bottom: 25px; color: white; font-weight: bold;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        /* الحاوية الرئيسية للمحتوى */
-        .container {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 480px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: none; /* تظهر بعد انتهاء الترحيب */
-        }
-
-        /* الأقسام (تظهر وتختفي حسب الخيار) */
-        .page { display: none; }
-        .page.active { display: block; }
-
-        /* أزرار المنيو الرئيسي */
-        .menu-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 25px;
-        }
-        .menu-btn {
-            width: 100%;
-            padding: 18px;
-            font-size: 18px;
-            font-weight: 700;
-            border-radius: 16px;
-            border: none;
-            cursor: pointer;
-            color: white;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+        .container { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); padding: 30px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); width: 100%; max-width: 480px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); display: none; }
+        .page { display: none; } .page.active { display: block; }
+        .menu-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
+        .menu-btn { width: 100%; padding: 18px; font-size: 18px; font-weight: 700; border-radius: 16px; border: none; cursor: pointer; color: white; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-create-menu { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); }
         .btn-scan-menu { background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%); }
         .btn-share-menu { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); }
-        .menu-btn:active { transform: scale(0.98); }
-
-        /* أزرار الواجهات الداخلية */
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            margin-bottom: 12px;
-        }
+        
+        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; color: white; margin-bottom: 12px; }
         .btn-primary { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); }
         .btn-back { background: #334155; color: #cbd5e1; margin-top: 15px; }
         .btn-success { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
         .btn-share { background: linear-gradient(135deg, #b45309 0%, #d97706 100%); }
-
-        /* فورمات وتصميم عناصر الواجهة */
-        .form-group { text-align: right; margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #cbd5e1; font-weight: 600; }
-        input[type="text"] {
-            width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #334155;
-            background: #0f172a; color: #fff; font-size: 16px; outline: none; text-align: right;
-        }
-        .color-picker-group { display: flex; gap: 15px; margin-bottom: 20px; justify-content: space-between; }
-        .color-item { flex: 1; text-align: right; }
-        .color-item input[type="color"] { width: 100%; height: 40px; border: none; border-radius: 8px; cursor: pointer; }
-
-        .result-section { margin-top: 25px; padding-top: 25px; border-top: 1px dashed #334155; display: none; }
-        .qr-card { background: white; padding: 15px; border-radius: 16px; display: inline-block; margin-bottom: 10px; }
-        .qr-card canvas, .qr-card img { display: block; margin: 0 auto; max-width: 200px; height: auto; }
-
-        /* ستايل أدوات القراءة */
-        #reader { width: 100%; background: #0f172a; border-radius: 16px; overflow: hidden; border: 2px solid #334155; margin-top: 15px; }
-        #scanResult { margin-top: 15px; padding: 15px; background: #0f172a; border-radius: 12px; border: 1px solid #334155; word-break: break-all; display: none; text-align: right; }
         
-        /* إخفاء ميزة رفع الملفات الافتراضية وجعلها زر جذاب */
+        input[type="text"] { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #334155; background: #0f172a; color: #fff; font-size: 16px; text-align: right; }
+        .color-picker-group { display: flex; gap: 15px; margin-bottom: 20px; }
+        .color-item { flex: 1; }
+        .color-item input[type="color"] { width: 100%; height: 40px; border: none; border-radius: 8px; cursor: pointer; }
+        
+        .qr-card { background: white; padding: 15px; border-radius: 16px; display: inline-block; margin-bottom: 10px; }
+        #reader { width: 100%; background: #0f172a; border-radius: 16px; overflow: hidden; border: 2px solid #334155; margin-top: 15px; display: none; }
+        #scanResult { margin-top: 15px; padding: 15px; background: #0f172a; border-radius: 12px; border: 1px solid #334155; display: none; text-align: right; }
         input[type="file"] { display: none; }
-
-        .history-section { margin-top: 25px; text-align: right; border-top: 1px solid #334155; padding-top: 20px; }
-        .history-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: #cbd5e1; }
-        .history-list { list-style: none; max-height: 100px; overflow-y: auto; }
-        .history-item { background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b; }
-        .history-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; direction: ltr; }
-        .btn-recreate { background: #334155; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 12px; border: none; cursor: pointer; }
-
         footer { margin-top: 20px; font-size: 13px; color: #64748b; }
-        footer span { color: #6366f1; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <!-- 1. واجهة الترحيب (Splash Screen) -->
     <div id="splashScreen">
-        <div class="splash-logo"></div>
-        <h1 style="color: white; font-weight: 700; font-size: 28px;">Ana-qr 🚀</h1>
-        <p style="color: #64748b; margin-top: 5px;">مرحباً بك في تطبيقك الذكي</p>
+        <div class="splash-logo">QR</div>
+        <h1 style="color: white; font-weight: 700; font-size: 32px; letter-spacing: 2px;">Mossaad QR 🚀</h1>
+        <p style="color: #a5b4fc; margin-top: 10px;">تكنولوجيا الأكواد الذكية</p>
     </div>
 
-    <!-- الحاوية الأساسية للتطبيق -->
     <div class="container" id="mainContainer">
-        
-        <!-- 2. واجهة القائمة الرئيسية (Menu) -->
         <div id="menuPage" class="page active">
             <h1 style="font-size: 24px;">القائمة الرئيسية 📱</h1>
-            <p style="color: #94a3b8; font-size: 14px; margin-bottom: 10px;">اختر ماذا تريد أن تفعل الآن</p>
             <div class="menu-grid">
-                <button class="menu-btn btn-create-menu" onclick="navigateTo('generatePage')">إنشاء كود QR 📥</button>
-                <button class="menu-btn btn-scan-menu" onclick="navigateTo('scanPage')">قراءة كود QR 📸</button>
-                <button class="menu-btn btn-share-menu" onclick="shareAppLink()">مشاركة التطبيق 🔗</button>
+                <button class="menu-btn btn-create-menu" onclick="navigateTo('generatePage')">إنشاء كود Mossaad</button>
+                <button class="menu-btn btn-scan-menu" onclick="navigateTo('scanPage')">قراءة كود QR</button>
+                <button class="menu-btn btn-share-menu" onclick="shareAppLink()">مشاركة التطبيق</button>
             </div>
         </div>
 
-        <!-- 3. واجهة إنشاء الـ QR (المعتادين عليها) -->
         <div id="generatePage" class="page">
-            <h2>إنشاء كود QR جديد ✨</h2>
-            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">أدخل الرابط أو النص لتوليد الكود فوراً</p>
-            
+            <h2>إنشاء كود جديد ✨</h2>
             <form id="qrForm" onsubmit="generateQR(event)">
-                <div class="form-group">
-                    <label for="data">الرابط أو النص:</label>
-                    <input type="text" id="data" placeholder="انسخ الرابط هنا..." required>
-                </div>
+                <input type="text" id="data" placeholder="انسخ الرابط هنا..." required>
                 <div class="color-picker-group">
-                    <div class="color-item">
-                        <label>لون الكود:</label>
-                        <input type="color" id="fgColor" value="#000000">
-                    </div>
-                    <div class="color-item">
-                        <label>خلفية الكود:</label>
-                        <input type="color" id="bgColor" value="#ffffff">
-                    </div>
+                    <div class="color-item"><label>لون الكود:</label><input type="color" id="fgColor" value="#000000"></div>
+                    <div class="color-item"><label>الخلفية:</label><input type="color" id="bgColor" value="#ffffff"></div>
                 </div>
-                <button type="submit" class="btn btn-primary">توليد وتخصيص الكود</button>
+                <button type="submit" class="btn btn-primary">توليد الكود</button>
             </form>
-
-            <div class="result-section" id="resultArea">
+            <div id="resultArea" style="display:none; text-align:center;">
                 <div class="qr-card"><div id="qrcode"></div></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button onclick="downloadQR()" class="btn btn-success">تحميل 📥</button>
-                    <button onclick="shareQR()" class="btn btn-share">مشاركة 🔗</button>
-                </div>
+                <button onclick="downloadQR()" class="btn btn-success">تحميل 📥</button>
             </div>
-
-            <!-- سجل التاريخ داخل واجهة الإنشاء -->
-            <div class="history-section" id="historySection" style="display: none;">
-                <div class="history-title">الأكواد الأخيرة الصادرة:</div>
-                <ul class="history-list" id="historyList"></ul>
-            </div>
-
-            <button class="btn btn-back" onclick="navigateTo('menuPage')">العودة للقائمة الرئيسية ↩️</button>
+            <button class="btn btn-back" onclick="navigateTo('menuPage')">العودة للرئيسية</button>
         </div>
 
-        <!-- 4. واجهة قراءة الـ QR (كاميرا أو ملف صورة) -->
         <div id="scanPage" class="page">
             <h2>قراءة كود QR 🔍</h2>
-            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">اختر الطريقة المناسبة لمسح الكود</p>
-            
-            <!-- خيارات القراءة -->
-            <button id="startCamBtn" onclick="startScanner()" class="btn btn-primary">تشغيل الكاميرا لايف 📸</button>
-            
-            <label for="fileInput" class="btn btn-scan-menu" style="display: flex; margin-bottom: 0;">اختيار صورة من الملفات 📂</label>
+            <button id="startCamBtn" onclick="startScanner()" class="btn btn-primary">تشغيل الكاميرا 📸</button>
+            <label for="fileInput" class="btn btn-scan-menu">اختيار صورة من الملفات 📂</label>
             <input type="file" id="fileInput" accept="image/*" onchange="scanLocalFile(event)">
-
-            <div id="reader" style="display: none;"></div>
-            
-            <div id="scanResult">
-                <strong style="color: #10b981;">النتيجة المقروءة:</strong>
-                <p id="resultText" style="margin-top: 8px; color: #fff; direction: ltr; font-weight: 600;"></p>
-            </div>
-
-            <button class="btn btn-back" onclick="handleScanBack()">العودة للقائمة الرئيسية ↩️</button>
+            <div id="reader"></div>
+            <div id="scanResult"><strong style="color: #10b981;">النتيجة:</strong><p id="resultText"></p></div>
+            <button class="btn btn-back" onclick="handleScanBack()">العودة للرئيسية</button>
         </div>
-
-        <footer>
-            تطوير وبرمجة بواسطة <span>مسعد طبيش</span> © 2026
-        </footer>
     </div>
 
     <script>
-        let qrcodeInstance = null;
-        let html5QrcodeScanner = null;
-
-        // تشغيل واجهة الترحيب لمدة 3 ثوانٍ كاملة
         window.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
-                const splash = document.getElementById('splashScreen');
-                splash.style.opacity = '0';
-                splash.style.visibility = 'hidden';
-                document.getElementById('mainContainer').style.display = 'block';
-                displayHistory();
-            }, 3000); 
+                document.getElementById('splashScreen').style.opacity = '0';
+                setTimeout(() => document.getElementById('mainContainer').style.display = 'block', 500);
+            }, 3000);
         });
 
-        // تنقل ذكي بين الصفحات
         function navigateTo(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
         }
 
-        function handleScanBack() {
-            stopScanner();
-            document.getElementById('scanResult').style.display = 'none';
-            navigateTo('menuPage');
-        }
-
-        // --- 1. قسم توليد الكود ---
-        function generateQR(event, textValue = null) {
-            if(event) event.preventDefault();
-            const dataInput = textValue || document.getElementById('data').value;
-            if (!textValue) document.getElementById('data').value = dataInput;
-
-            const fgColor = document.getElementById('fgColor').value;
-            const bgColor = document.getElementById('bgColor').value;
+        function generateQR(e) {
+            e.preventDefault();
             const qrContainer = document.getElementById('qrcode');
-            
             qrContainer.innerHTML = '';
-            qrcodeInstance = new QRCode(qrContainer, {
-                text: dataInput, width: 200, height: 200,
-                colorDark : fgColor, colorLight : bgColor, correctLevel : QRCode.CorrectLevel.H
+            new QRCode(qrContainer, {
+                text: document.getElementById('data').value,
+                width: 200, height: 200,
+                colorDark: document.getElementById('fgColor').value,
+                colorLight: document.getElementById('bgColor').value
             });
-
             document.getElementById('resultArea').style.display = 'block';
-            if (!textValue) saveToHistory(dataInput);
         }
 
-        function downloadQR() {
-            const qrImg = document.querySelector('#qrcode img');
-            const qrCanvas = document.querySelector('#qrcode canvas');
-            let downloadUrl = qrImg?.src || qrCanvas?.toDataURL("image/png");
-
-            if (downloadUrl) {
-                const link = document.createElement('a');
-                link.href = downloadUrl; link.download = 'qrcode_mossaed.png';
-                document.body.appendChild(link); link.click(); document.body.removeChild(link);
-            }
-        }
-
-        async function shareQR() {
-            const qrCanvas = document.querySelector('#qrcode canvas');
-            if (!qrCanvas) return;
-            qrCanvas.toBlob(async (blob) => {
-                const file = new File([blob], 'qrcode.png', { type: blob.type });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try { await navigator.share({ files: [file], title: 'كود QR', text: 'من تطبيق مسعد' }); } catch(e){}
-                } else { alert("النظام لا يدعم المشاركة المباشرة."); }
-            });
-        }
-
-        // --- 2. قسم قراءة الكود (كاميرا + ملفات) ---
         function startScanner() {
             document.getElementById('reader').style.display = 'block';
-            document.getElementById('startCamBtn').style.display = 'none';
-            document.getElementById('scanResult').style.display = 'none';
-
-            html5QrcodeScanner = new Html5Qrcode("reader");
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-
-            html5QrcodeScanner.start(
-                { facingMode: "environment" }, config,
-                (decodedText) => {
-                    showScanResult(decodedText);
-                    stopScanner();
-                },
-                (err) => {}
-            ).catch(err => { alert("يرجى السماح بصلاحية الكاميرا!"); stopScanner(); });
-        }
-
-        function stopScanner() {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.stop().then(() => {
-                    document.getElementById('reader').style.display = 'none';
-                    document.getElementById('startCamBtn').style.display = 'block';
-                }).catch(e => {});
-            }
-        }
-
-        // قراءة الـ QR من ملف صورة مخزن في الجهاز
-        function scanLocalFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const html5QrCode = new Html5Qrcode("reader");
-            html5QrCode.scanFile(file, true)
-                .then(decodedText => {
-                    showScanResult(decodedText);
-                })
-                .catch(err => {
-                    alert("فشل قراءة الكود! تأكد من أن الصورة تحتوي على كود QR واضح جداً.");
-                });
-        }
-
-        function showScanResult(text) {
-            document.getElementById('scanResult').style.display = 'block';
-            const resText = document.getElementById('resultText');
-            resText.innerHTML = text.startsWith('http') ? `<a href="${text}" target="_blank" style="color: #6366f1;">${text}</a>` : text;
-        }
-
-        // --- 3. زر مشاركة التطبيق وميزة السجل ---
-        async function shareAppLink() {
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: 'تطبيق Ana-qr',
-                        text: 'حمل تطبيق توليد وقراءة أكواد الـ QR الخاص بالمطور مسعد طبيش مجاناً!',
-                        url: window.location.href // راح يشارك رابط موقع الـ Render الحالي تاعك
-                    });
-                } catch(e){}
-            } else { alert("خاصية المشاركة غير مدعومة في متصفحك حالياً."); }
-        }
-
-        function saveToHistory(text) {
-            let history = JSON.parse(localStorage.getItem('qr_history')) || [];
-            if (!history.includes(text)) {
-                history.unshift(text); if (history.length > 3) history.pop();
-                localStorage.setItem('qr_history', JSON.stringify(history)); displayHistory();
-            }
-        }
-
-        function displayHistory() {
-            let history = JSON.parse(localStorage.getItem('qr_history')) || [];
-            const list = document.getElementById('historyList');
-            const section = document.getElementById('historySection');
-            if (history.length === 0) { section.style.display = 'none'; return; }
-            section.style.display = 'block'; list.innerHTML = '';
-            history.forEach(item => {
-                const li = document.createElement('li'); li.className = 'history-item';
-                li.innerHTML = `<button class="btn-recreate" onclick="navigateTo('generatePage'); generateQR(null, '${item}')">توليد</button><div class="history-text">${item}</div>`;
-                list.appendChild(li);
+            const scanner = new Html5Qrcode("reader");
+            scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
+                showResult(text); scanner.stop();
             });
         }
+
+        function scanLocalFile(e) {
+            new Html5Qrcode("reader").scanFile(e.target.files[0], true).then(showResult);
+        }
+
+        function showResult(text) {
+            document.getElementById('scanResult').style.display = 'block';
+            document.getElementById('resultText').innerText = text;
+        }
+
+        function handleScanBack() { document.getElementById('reader').style.display = 'none'; navigateTo('menuPage'); }
+        function shareAppLink() { if(navigator.share) navigator.share({title: 'Mossaad QR', url: window.location.href}); }
     </script>
 </body>
 </html>
