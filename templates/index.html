@@ -3,55 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mossaad QR الاحترافي</title>
+    <title>Mossaad QR</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; color: #f8fafc; overflow-x: hidden; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Cairo', sans-serif; 
+        }
+        body { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 20px; 
+            color: #f8fafc; 
+            overflow-x: hidden; 
+        }
 
         /* واجهة ترحيب سينمائية */
         #splashScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
             background: linear-gradient(45deg, #0f172a, #1e1b4b, #312e81, #0f172a);
             background-size: 300% 300%;
             animation: gradientBG 5s ease infinite;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            z-index: 9999; 
+            transition: opacity 0.5s ease, visibility 0.5s;
         }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes gradientBG { 
+            0% { background-position: 0% 50%; } 
+            50% { background-position: 100% 50%; } 
+            100% { background-position: 0% 50%; } 
+        }
         
-        .splash-logo {
-            width: 120px; height: 120px; background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #818cf8; border-radius: 20px; display: flex;
-            justify-content: center; align-items: center; font-size: 40px;
-            animation: pulse 2s infinite; margin-bottom: 25px; color: white; font-weight: bold;
+        .splash-logo { 
+            width: 120px; 
+            height: 120px; 
+            background: rgba(255, 255, 255, 0.1); 
+            border: 2px solid #818cf8; 
+            border-radius: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 40px; 
+            color: white; 
+            font-weight: bold; 
+            margin-bottom: 25px; 
+            animation: pulse 2s infinite;
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes pulse { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.05); } 
+            100% { transform: scale(1); } 
+        }
 
-        .container { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); padding: 30px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); width: 100%; max-width: 480px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); display: none; }
-        .page { display: none; } .page.active { display: block; }
+        /* الحاوية الرئيسية */
+        .container { 
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(10px); 
+            padding: 30px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); 
+            width: 100%; 
+            max-width: 480px; 
+            text-align: center; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            display: none; /* تظهر بالسكربت بعد انتهاء واجهة الترحيب */
+        }
+        
+        /* التحكم بالصفحات */
+        .page { display: none; } 
+        .page.active { display: block; }
+        
+        /* أزرار المنيو الرئيسي */
         .menu-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
-        .menu-btn { width: 100%; padding: 18px; font-size: 18px; font-weight: 700; border-radius: 16px; border: none; cursor: pointer; color: white; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .menu-btn { 
+            width: 100%; 
+            padding: 18px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            border-radius: 16px; 
+            border: none; 
+            cursor: pointer; 
+            color: white; 
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+        }
         .btn-create-menu { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); }
         .btn-scan-menu { background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%); }
         .btn-share-menu { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); }
+        .menu-btn:hover { transform: translateY(-2px); opacity: 0.9; }
         
-        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; color: white; margin-bottom: 12px; }
+        /* أزرار الصفحات الداخلية */
+        .btn { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: none; 
+            font-size: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            color: white; 
+            margin-bottom: 12px; 
+            transition: 0.3s; 
+        }
         .btn-primary { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); }
         .btn-back { background: #334155; color: #cbd5e1; margin-top: 15px; }
         .btn-success { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
-        .btn-share { background: linear-gradient(135deg, #b45309 0%, #d97706 100%); }
         
-        input[type="text"] { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #334155; background: #0f172a; color: #fff; font-size: 16px; text-align: right; }
+        /* المدخلات */
+        input[type="text"] { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 2px solid #334155; 
+            background: #0f172a; 
+            color: #fff; 
+            font-size: 16px; 
+            text-align: right; 
+            margin-bottom: 15px; 
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: #6366f1; }
+        
         .color-picker-group { display: flex; gap: 15px; margin-bottom: 20px; }
-        .color-item { flex: 1; }
-        .color-item input[type="color"] { width: 100%; height: 40px; border: none; border-radius: 8px; cursor: pointer; }
+        .color-item { flex: 1; text-align: right; }
+        .color-item label { display: block; margin-bottom: 5px; font-size: 14px; color: #cbd5e1; }
+        .color-item input[type="color"] { width: 100%; height: 40px; border: none; border-radius: 8px; cursor: pointer; background: transparent; }
         
-        .qr-card { background: white; padding: 15px; border-radius: 16px; display: inline-block; margin-bottom: 10px; }
+        /* حاوية الكود الناتج */
+        .result-section { margin-top: 25px; padding-top: 25px; border-top: 1px dashed #334155; display: none; }
+        .qr-card { background: white; padding: 15px; border-radius: 16px; display: inline-block; margin-bottom: 15px; }
+        .qr-card canvas, .qr-card img { display: block; margin: 0 auto; max-width: 200px; height: auto; }
+        
+        /* حاوية الكاميرا والقراءة */
         #reader { width: 100%; background: #0f172a; border-radius: 16px; overflow: hidden; border: 2px solid #334155; margin-top: 15px; display: none; }
-        #scanResult { margin-top: 15px; padding: 15px; background: #0f172a; border-radius: 12px; border: 1px solid #334155; display: none; text-align: right; }
+        #scanResult { margin-top: 15px; padding: 15px; background: #0f172a; border-radius: 12px; border: 1px solid #334155; display: none; text-align: right; word-break: break-all; }
         input[type="file"] { display: none; }
         footer { margin-top: 20px; font-size: 13px; color: #64748b; }
     </style>
@@ -60,93 +163,194 @@
 
     <div id="splashScreen">
         <div class="splash-logo">QR</div>
-        <h1 style="color: white; font-weight: 700; font-size: 32px; letter-spacing: 2px;">Mossaad QR 🚀</h1>
-        <p style="color: #a5b4fc; margin-top: 10px;">تكنولوجيا الأكواد الذكية</p>
+        <h1 style="color: white; font-weight: 700; font-size: 32px; letter-spacing: 2px;">Mossaad QR</h1>
+        <p style="color: #a5b4fc; margin-top: 10px;">نظام الأكواد الذكي</p>
     </div>
 
     <div class="container" id="mainContainer">
+        
         <div id="menuPage" class="page active">
-            <h1 style="font-size: 24px;">القائمة الرئيسية 📱</h1>
+            <h1 style="font-size: 24px; margin-bottom: 5px;">القائمة الرئيسية 📱</h1>
+            <p style="color: #94a3b8; font-size: 14px; margin-bottom: 10px;">اختر العملية التي تريد القيام بها</p>
             <div class="menu-grid">
-                <button class="menu-btn btn-create-menu" onclick="navigateTo('generatePage')">إنشاء كود Mossaad</button>
-                <button class="menu-btn btn-scan-menu" onclick="navigateTo('scanPage')">قراءة كود QR</button>
-                <button class="menu-btn btn-share-menu" onclick="shareAppLink()">مشاركة التطبيق</button>
+                <button class="menu-btn btn-create-menu" onclick="navigateTo('generatePage')">إنشاء كود QR 📥</button>
+                <button class="menu-btn btn-scan-menu" onclick="navigateTo('scanPage')">قراءة كود QR 📸</button>
+                <button class="menu-btn btn-share-menu" onclick="shareAppLink()">مشاركة التطبيق 🔗</button>
             </div>
         </div>
 
         <div id="generatePage" class="page">
             <h2>إنشاء كود جديد ✨</h2>
+            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">أدخل النص أو الرابط لتوليد الكود</p>
             <form id="qrForm" onsubmit="generateQR(event)">
-                <input type="text" id="data" placeholder="انسخ الرابط هنا..." required>
+                <input type="text" id="data" placeholder="ادخل الرابط أو النص هنا..." required>
                 <div class="color-picker-group">
                     <div class="color-item"><label>لون الكود:</label><input type="color" id="fgColor" value="#000000"></div>
                     <div class="color-item"><label>الخلفية:</label><input type="color" id="bgColor" value="#ffffff"></div>
                 </div>
-                <button type="submit" class="btn btn-primary">توليد الكود</button>
+                <button type="submit" class="btn btn-primary">توليد الكود فوراً</button>
             </form>
-            <div id="resultArea" style="display:none; text-align:center;">
+            
+            <div id="resultArea" class="result-section">
                 <div class="qr-card"><div id="qrcode"></div></div>
-                <button onclick="downloadQR()" class="btn btn-success">تحميل 📥</button>
+                <button onclick="downloadQR()" class="btn btn-success">تحميل الكود 📥</button>
             </div>
-            <button class="btn btn-back" onclick="navigateTo('menuPage')">العودة للرئيسية</button>
+            <button class="btn btn-back" onclick="navigateTo('menuPage')">العودة للرئيسية ↩️</button>
         </div>
 
         <div id="scanPage" class="page">
             <h2>قراءة كود QR 🔍</h2>
+            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">اختر الكاميرا أو امسح ملف صورة</p>
             <button id="startCamBtn" onclick="startScanner()" class="btn btn-primary">تشغيل الكاميرا 📸</button>
-            <label for="fileInput" class="btn btn-scan-menu">اختيار صورة من الملفات 📂</label>
+            
+            <label for="fileInput" class="btn btn-scan-menu" style="display: flex; justify-content: center; align-items: center; margin-bottom: 12px;">اختيار صورة من الملفات 📂</label>
             <input type="file" id="fileInput" accept="image/*" onchange="scanLocalFile(event)">
+            
             <div id="reader"></div>
-            <div id="scanResult"><strong style="color: #10b981;">النتيجة:</strong><p id="resultText"></p></div>
-            <button class="btn btn-back" onclick="handleScanBack()">العودة للرئيسية</button>
+            
+            <div id="scanResult">
+                <strong style="color: #10b981;">النتيجة المقروءة:</strong>
+                <p id="resultText" style="margin-top: 8px; color: white; direction: ltr; font-weight: bold;"></p>
+            </div>
+            <button class="btn btn-back" onclick="handleScanBack()">العودة للرئيسية ↩️</button>
         </div>
+
+        <footer>
+            تطوير وتصميم التطبيق © 2026
+        </footer>
     </div>
 
     <script>
+        let html5QrcodeScanner = null;
+
+        // إدارة إخفاء شاشة الترحيب وإظهار المحتوى بشكل صحيح ومضمون
         window.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
-                document.getElementById('splashScreen').style.opacity = '0';
-                setTimeout(() => document.getElementById('mainContainer').style.display = 'block', 500);
+                const splash = document.getElementById('splashScreen');
+                const mainContainer = document.getElementById('mainContainer');
+                
+                splash.style.opacity = '0';
+                splash.style.visibility = 'hidden';
+                mainContainer.style.display = 'block'; // تفعيل الحاوية بالكامل
             }, 3000);
         });
 
+        // دالة التنقل الفوري بين الواجهات والأقسام بدون مشاكل
         function navigateTo(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
         }
 
+        // دالة توليد كود الـ QR وتغيير الألوان
         function generateQR(e) {
             e.preventDefault();
             const qrContainer = document.getElementById('qrcode');
             qrContainer.innerHTML = '';
+            
             new QRCode(qrContainer, {
                 text: document.getElementById('data').value,
-                width: 200, height: 200,
+                width: 200, 
+                height: 200,
                 colorDark: document.getElementById('fgColor').value,
-                colorLight: document.getElementById('bgColor').value
+                colorLight: document.getElementById('bgColor').value,
+                correctLevel: QRCode.CorrectLevel.H
             });
             document.getElementById('resultArea').style.display = 'block';
         }
 
+        // دالة تحميل كود الـ QR المولد لجهازك
+        function downloadQR() {
+            const qrImg = document.querySelector('#qrcode img');
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            let downloadUrl = qrImg?.src || qrCanvas?.toDataURL("image/png");
+
+            if (downloadUrl) {
+                const link = document.createElement('a');
+                link.href = downloadUrl; 
+                link.download = 'mossaad_qr.png';
+                document.body.appendChild(link); 
+                link.click(); 
+                document.body.removeChild(link);
+            }
+        }
+
+        // دالة تشغيل كاميرا الهاتف وقراءة الـ QR لايف
         function startScanner() {
             document.getElementById('reader').style.display = 'block';
-            const scanner = new Html5Qrcode("reader");
-            scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
-                showResult(text); scanner.stop();
+            document.getElementById('startCamBtn').style.display = 'none';
+            document.getElementById('scanResult').style.display = 'none';
+
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            html5QrcodeScanner.start(
+                { facingMode: "environment" }, 
+                { fps: 10, qrbox: { width: 250, height: 250 } }, 
+                (text) => {
+                    showResult(text); 
+                    stopScanner();
+                },
+                (err) => {}
+            ).catch(err => { 
+                alert("يرجى تفعيل صلاحية الكاميرا للتطبيق!"); 
+                stopScanner(); 
             });
         }
 
-        function scanLocalFile(e) {
-            new Html5Qrcode("reader").scanFile(e.target.files[0], true).then(showResult);
+        // دالة إيقاف الكاميرا بأمان عند الخروج أو انتهاء القراءة
+        function stopScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then(() => {
+                    document.getElementById('reader').style.display = 'none';
+                    document.getElementById('startCamBtn').style.display = 'block';
+                }).catch(e => {});
+            }
         }
 
+        // دالة قراءة كود QR من ملف صورة داخل معرض صور الهاتف
+        function scanLocalFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            document.getElementById('scanResult').style.display = 'none';
+
+            const localScanner = new Html5Qrcode("reader");
+            localScanner.scanFile(file, true)
+                .then(text => {
+                    showResult(text);
+                })
+                .catch(err => {
+                    alert("لم يتم العثور على كود QR واضح في الصورة المحملة!");
+                });
+        }
+
+        // دالة إظهار النتيجة وربط الروابط تلقائياً
         function showResult(text) {
             document.getElementById('scanResult').style.display = 'block';
-            document.getElementById('resultText').innerText = text;
+            const resText = document.getElementById('resultText');
+            if (text.startsWith('http://') || text.startsWith('https://')) {
+                resText.innerHTML = `<a href="${text}" target="_blank" style="color: #6366f1; text-decoration: underline;">${text}</a>`;
+            } else {
+                resText.innerText = text;
+            }
         }
 
-        function handleScanBack() { document.getElementById('reader').style.display = 'none'; navigateTo('menuPage'); }
-        function shareAppLink() { if(navigator.share) navigator.share({title: 'Mossaad QR', url: window.location.href}); }
+        // زر العودة الآمنة من صفحة الكاميرا
+        function handleScanBack() { 
+            stopScanner(); 
+            document.getElementById('scanResult').style.display = 'none'; 
+            navigateTo('menuPage'); 
+        }
+
+        // زر مشاركة التطبيق
+        function shareAppLink() { 
+            if(navigator.share) {
+                navigator.share({
+                    title: 'Mossaad QR', 
+                    text: 'حمل تطبيق Mossaad QR الرائع لتوليد وقراءة الأكواد مجاناً!',
+                    url: window.location.href
+                }).catch(e => {});
+            } else {
+                alert("خاصية المشاركة المباشرة غير مدعومة في متصفحك الحالي، يمكنك نسخ الرابط ومشاركته يدوياً.");
+            }
+        }
     </script>
 </body>
 </html>
