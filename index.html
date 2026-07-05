@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مُولّد أكواد QR ذكي</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f6fa; color: #2f3640; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); text-align: center; max-width: 420px; width: 90%; }
+        h1 { color: #2f3542; font-size: 22px; margin-bottom: 8px; }
+        p { color: #747d8c; font-size: 14px; margin-bottom: 24px; }
+        form { margin-bottom: 20px; text-align: right; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #57606f; }
+        input[type="text"] { width: 100%; padding: 12px; border: 2px solid #f1f2f6; border-radius: 8px; font-size: 15px; outline: none; transition: 0.3s; text-align: left; }
+        input[type="text"]:focus { border-color: #70a1ff; }
+        .btn { display: inline-block; width: 100%; padding: 12px; background-color: #70a1ff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { background-color: #1e90ff; }
+        .qr-result { margin-top: 25px; padding-top: 20px; border-top: 2px dashed #f1f2f6; }
+        .qr-result img { max-width: 200px; border: 1px solid #dcdde1; border-radius: 8px; padding: 5px; background: white; }
+        .success-msg { color: #2ed573; font-size: 14px; margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>مُولّد أكواد QR الذكي 📱</h1>
+        <p>اكتب أي رابط أو نص ليتم تحويله فوراً إلى كود QR قابل للمسح.</p>
+        
+        <form method="POST" action="/">
+            <label for="text_data">الرابط أو النص:</label>
+            <input type="text" id="text_data" name="text_data" placeholder="https://example.com" required value="{{ text_input }}">
+            <button type="submit" class="btn">توليد الكود الآن ✨</button>
+        </form>
+
+        {% if qr_generated %}
+        <div class="qr-result">
+            <h3>كود الـ QR الخاص بك جاهز:</h3>
+            <!-- تم تصليح السطر هنا ليعرض الصورة مباشرة -->
+            <img src="/static/qr.png" alt="QR Code">
+            <p class="success-msg">تم التوليد بنجاح! يمكنك تصوير الشاشة لتجربته.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+
