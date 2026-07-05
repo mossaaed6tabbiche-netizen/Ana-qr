@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mossaad QR</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- مكتبة توليد الأكواد -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- مكتبة الكاميرا وقراءة الأكواد -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         * { 
@@ -26,7 +28,7 @@
             overflow-x: hidden; 
         }
 
-        /* واجهة ترحيب سينمائية */
+        /* واجهة ترحيب سينمائية معدلة بالكامل */
         #splashScreen {
             position: fixed; 
             top: 0; 
@@ -81,14 +83,14 @@
             max-width: 480px; 
             text-align: center; 
             border: 1px solid rgba(255, 255, 255, 0.1); 
-            display: none; /* تظهر بالسكربت بعد انتهاء واجهة الترحيب */
+            display: none; 
         }
         
         /* التحكم بالصفحات */
         .page { display: none; } 
         .page.active { display: block; }
         
-        /* أزرار المنيو الرئيسي */
+        /* أزرار المنيو الرئيسي بعبارات عامة واحترافية */
         .menu-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
         .menu-btn { 
             width: 100%; 
@@ -161,14 +163,17 @@
 </head>
 <body>
 
+    <!-- واجهة الترحيب السينمائية المعدلة باسمك الفخم وبدون تكرار بالداخل -->
     <div id="splashScreen">
         <div class="splash-logo">QR</div>
         <h1 style="color: white; font-weight: 700; font-size: 32px; letter-spacing: 2px;">Mossaad QR</h1>
         <p style="color: #a5b4fc; margin-top: 10px;">نظام الأكواد الذكي</p>
     </div>
 
+    <!-- الحاوية الأساسية للتطبيق -->
     <div class="container" id="mainContainer">
         
+        <!-- صفحة القائمة الرئيسية (تم نزع تكرار الاسم للأناقة الاحترافية) -->
         <div id="menuPage" class="page active">
             <h1 style="font-size: 24px; margin-bottom: 5px;">القائمة الرئيسية 📱</h1>
             <p style="color: #94a3b8; font-size: 14px; margin-bottom: 10px;">اختر العملية التي تريد القيام بها</p>
@@ -179,6 +184,7 @@
             </div>
         </div>
 
+        <!-- صفحة إنشاء الـ QR -->
         <div id="generatePage" class="page">
             <h2>إنشاء كود جديد ✨</h2>
             <p style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">أدخل النص أو الرابط لتوليد الكود</p>
@@ -198,6 +204,7 @@
             <button class="btn btn-back" onclick="navigateTo('menuPage')">العودة للرئيسية ↩️</button>
         </div>
 
+        <!-- صفحة قراءة الـ QR -->
         <div id="scanPage" class="page">
             <h2>قراءة كود QR 🔍</h2>
             <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">اختر الكاميرا أو امسح ملف صورة</p>
@@ -231,7 +238,7 @@
                 
                 splash.style.opacity = '0';
                 splash.style.visibility = 'hidden';
-                mainContainer.style.display = 'block'; // تفعيل الحاوية بالكامل
+                mainContainer.style.display = 'block'; 
             }, 3000);
         });
 
